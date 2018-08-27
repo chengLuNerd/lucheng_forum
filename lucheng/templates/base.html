@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lucheng is a forum software written in Flask">
+    <meta name="author" content="cheng.lu">
+
+    <title>
+      {% block title %}
+        Lucheng
+      {% endblock %}
+    </title>
+
+    {% block stylesheets %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% endblock %}
+
+    {# for extra stylesheets. e.q. a template has to add something #}
+    {% block css %}
+    {% endblock %}
+
+    {# for various extra things #}
+    {% block head_extra %}
+    {% endblock %}
+  </head>
+  <body>
+    <!-- main forum layout -->
+    <div class="flaskbb-layout">
+      <div class="container">
+        <!-- forum header - place for the project title and subtitle -->
+        {% block header %}
+        <div class="flaskbb-header">
+          <div class="flaskbb-meta">
+            <div class="flaskbb-title">LUCHENG_TITLE</div>
+            <div class="flaskbb-subtitle">PROJECT_SUBTITLE</div>
+          </div>
+        </div>
+        {% endblock %}
+
+        <!-- forum menu - contains all the navigation items -->
+        <nav class="navbar navbar-default" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+              <!-- navbar left -->
+              <ul class="nav navbar-nav forum-nav">
+                <li><a href="#"><i class="fa fa-home"></i> Portal</a></li>
+                <li class="active"><a href="#"><i class="fa fa-comment"></i> Forum <span class="sr-only">(current)</span></a></li>
+                <li><a href="#"><i class="fa fa-user"></i> Memberlist</a></li>
+                <li><a href="#"><i class="fa fa-search"></i> Search</a></li>
+              </ul>
+
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <div class="btn-group navbar-btn user-btn">
+                        <a class="btn btn-primary" href="#">
+                            <span class="fa fa-user fa-fw"></span> Login
+                        </a>
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#"><span class="fa fa-user-plus fa-fw"></span> Register</a></li>
+                            <li><a href="#"><span class="fa fa-undo fa-fw"></span> Reset Password</a></li>
+                        </ul>
+                    </div>
+                </li>
+              </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </nav>
+
+        <!-- the actual content block -->
+        {% block content %}
+
+        {% endblock %}
+
+      </div> <!-- end container -->
+
+      <footer class="flaskbb-footer">
+        <div class="container">
+          <p class="text-muted pull-right">powered by <a href="https://flaskbb.org">cheng.lu</a></p>
+          <p class="text-muted pull-left">&copy; 2013 - 2016 <a href="https://flaskbb.org">Lucheng</a></p>
+        </div>
+      </footer>
+
+    </div><!-- end lucheng-layout -->
+
+    {% block javascript %}
+    <!-- jquery and bootstrap and flaskbb.js -->
+    <script src="{{ url_for('static', filename='js/scripts.min.js')}}"
+    {% endblock %}
+
+    {# for extra scripts in other template. #}
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>

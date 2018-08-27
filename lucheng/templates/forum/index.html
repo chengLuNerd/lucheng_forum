@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Lucheng - Index{% endblock %}
+
+{% block content %}
+<div class="index-view">
+  {% for category, forums in categories %}
+    {% include "forum/category_layout.html" %}
+  {% endfor %}
+
+  <div class="panel page-panel">
+    <div class="panel-heading page-head">
+      Board Statistics
+    </div>
+    <div class="panel-body page-body">
+      <div class="row page-row">
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          <p class="flaskbb-stats">Total number of registered users</p>
+          <p class="flaskbb-stats">Total number of topics</p>
+          <p class="flaskbb-stats">Total number of posts</p>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+          <p class="flaskbb-stats">Newest registered user</p>
+          <p class="flaskbb-stats">Registered users online</p>
+          <p class="flaskbb-stats">Guests online</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
