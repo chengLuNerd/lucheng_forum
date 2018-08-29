@@ -1,3 +1,10 @@
+from lucheng.extensions import db
+
+groups_users = db.Table(
+    'groups_users',
+    db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
+    db.Column('group_id', db.Integer(), db.ForeignKey('groups.id')))
+
 
 class Group(db.Model):
     __tablename__ = "groups"
@@ -31,3 +38,21 @@ class Group(db.Model):
         Required for cache.memoize() to work across requests.
         """
         return "<{} {} {}>".format(self.__class__.__name__, self.id, self.name)
+
+
+class User(db.Model):
+    __table__name__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(200), unique=True, nullable=False)
+    email = db.Column(db.String(200), unique=True, nullable=False)
+    _password = db.Column('password', db.String(120), nullable=False)
+
+    activated = db.Column(db.Boolean, default=False)
+
+    
+    secondary_groups = db.relationship('Group',
+                                        secondary=groups_users,
+                                        primaryjoin=(groups_users.c.user_id == id),
+                                        backref=db.backref('users', lazy='dynamic'),
+                                        lazy='dynamic')
