@@ -6,7 +6,7 @@ description: xxxx
 
 from collections import OrderedDict
 
-group_fixtures = OrderedDict(
+group_fixture = OrderedDict((
     ('Administrator', {
         'description': 'The Administrator Group',
         'admin': True,
@@ -97,4 +97,4 @@ group_fixtures = OrderedDict(
         'mod_edituser': False,
         'mod_banuser': False,
     })
-)
+))
