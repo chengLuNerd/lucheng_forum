@@ -68,5 +68,9 @@ def install(welcome, force, username, email, password, group):
     create_database(db.engine.url)
     upgrade_database()
 
+    click.secho("[+] Creating default settings...", fg="cyan")
+    create_default_groups()
+    create_default_settings()
+
     click.secho("[+] Lucheng has been successfully installed!",
                 fg="green", bold=True)

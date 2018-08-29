@@ -17,3 +17,4 @@ class DefaultConfig(object):
     # Database
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + _basedir + '/' + 'flaskbb.sqlite'
     SQLALCHEMY_ECHO = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
