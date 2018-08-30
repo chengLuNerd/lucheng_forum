@@ -1,8 +1,8 @@
-"""init db
+"""user model update add password filed
 
-Revision ID: 1e08a23e7f8a
+Revision ID: 35df77aca4ae
 Revises: 
-Create Date: 2018-08-30 22:28:28.667916
+Create Date: 2018-08-31 06:28:30.000309
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1e08a23e7f8a'
+revision = '35df77aca4ae'
 down_revision = None
 branch_labels = None
 depends_on = None

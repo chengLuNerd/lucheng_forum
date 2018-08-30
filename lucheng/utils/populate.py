@@ -41,7 +41,7 @@ def create_user(username, password, email, groupname):
             primary_group_id=group.id, activate=True)
     """
     user = User(username=username, password=password, email=email,
-                primary_group_id=group.id, activate=True)
+                primary_group_id=group.id, activated=True)
     user.save()
 
     return user

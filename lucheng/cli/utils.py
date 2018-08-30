@@ -43,6 +43,7 @@ def save_user_prompt(username, email, password, group):
     if not password:
         password = click.prompt(click.style("password", fg="magenta"),
                                 hide_input=True, confirmation_prompt=True)
+    # print(password)
     if not group:
         group = click.prompt(
             click.style("Group", fg="magenta"),

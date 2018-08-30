@@ -3,13 +3,13 @@ summary: models.py.
 
 description: xxx
 """
+from werkzeug.security import generate_password_hash
 from lucheng.extensions import db
 
 groups_users = db.Table(
     'groups_users',
     db.Column('group_id', db.Integer(), db.ForeignKey('groups.id')),
-    db.Column('user_id', db.Integer(), db.ForeignKey('users.id'))
-    )
+    db.Column('user_id', db.Integer(), db.ForeignKey('users.id')))
 
 
 class Group(db.Model):
@@ -63,18 +63,38 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(200), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
-    _password = db.Column('password', db.String(120), nullable=False)
 
+    def _get_password(self):
+        """Return the hashed password."""
+        return self._password
+
+    def _set_password(self, password):
+        """Check password, If password match it returns True, else False."""
+        if password is None:
+            return False
+        self._password = generate_password_hash(password)
+
+    _password = db.Column('password', db.String(120), nullable=False)
+    password = db.synonym('_password',
+                          descriptor=property(_get_password, _set_password))
     activated = db.Column(db.Boolean, default=False)
 
     primary_group_id = db.Column(db.Integer, db.ForeignKey('groups.id'),
                                  nullable=False)
     secondary_groups = db.relationship(
-                        'Group',
-                        secondary=groups_users,
-                        primaryjoin=(groups_users.c.user_id == id),
-                        backref=db.backref('users', lazy='dynamic'),
-                        lazy='dynamic')
+        'Group',
+        secondary=groups_users,
+        primaryjoin=(groups_users.c.user_id == id),
+        backref=db.backref('users', lazy='dynamic'),
+        lazy='dynamic')
+
+    # Methods
+    def __repr__(self):
+        """Set to a unique key specific to the object in the database.
+
+        Required for cache.memoize() to work across requests.
+        """
+        return "<{} {}>".format(self.__class__.__name__, self.username)
 
     def save(self):
         """Save the object to the database."""
