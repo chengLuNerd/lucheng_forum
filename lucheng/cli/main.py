@@ -10,7 +10,7 @@ from flask.cli import FlaskGroup, ScriptInfo
 from sqlalchemy_utils.functions import database_exists, create_database
 from sqlalchemy_utils.functions import drop_database
 from flask_migrate import upgrade as upgrade_database
-from lucheng.cli.utils import get_version
+from lucheng.cli.utils import (get_version, save_user_prompt)
 from lucheng.extensions import db
 from lucheng.utils.populate import create_default_groups
 from lucheng import create_app
@@ -72,6 +72,9 @@ def install(welcome, force, username, email, password, group):
     click.secho("[+] Creating default settings...", fg="cyan")
     create_default_groups()
     # create_default_settings()
+
+    click.secho("[+] Creating admin user...", fg="cyan")
+    save_user_prompt(username, email, password, group)
 
     click.secho("[+] Lucheng has been successfully installed!",
                 fg="green", bold=True)

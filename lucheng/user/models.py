@@ -67,9 +67,17 @@ class User(db.Model):
 
     activated = db.Column(db.Boolean, default=False)
 
+    primary_group_id = db.Column(db.Integer, db.ForeignKey('groups.id'),
+                                 nullable=False)
     secondary_groups = db.relationship(
                         'Group',
                         secondary=groups_users,
                         primaryjoin=(groups_users.c.user_id == id),
                         backref=db.backref('users', lazy='dynamic'),
                         lazy='dynamic')
+
+    def save(self):
+        """Save the object to the database."""
+        db.session.add(self)
+        db.session.commit()
+        return self
