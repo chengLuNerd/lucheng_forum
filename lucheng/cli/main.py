@@ -12,7 +12,7 @@ from sqlalchemy_utils.functions import drop_database
 from flask_migrate import upgrade as upgrade_database
 from lucheng.cli.utils import (get_version, save_user_prompt)
 from lucheng.extensions import db
-from lucheng.utils.populate import create_default_groups
+from lucheng.utils.populate import (create_default_groups, create_welcom_forum)
 from lucheng import create_app
 
 
@@ -28,15 +28,13 @@ def make_app(script_info):
 
 
 @click.group(cls=FlaskGroup, create_app=make_app, add_version_option=False)
-@click.option(
-            "--config", expose_value=False, callback=set_config,
-            required=False, is_flag=False, is_eager=True, metavar="CONFIG",
-            help="Specify the config to use in dotted module notation "
-            "e.g. flaskbb.configs.default.DefaultConfig")
-@click.option(
-            "--version",
-            expose_value=False, callback=get_version,
-            is_flag=True, is_eager=True, help="Show the lucheng version")
+@click.option("--config", expose_value=False, callback=set_config,
+              required=False, is_flag=False, is_eager=True, metavar="CONFIG",
+              help="Specify the config to use in dotted module notation "
+              "e.g. flaskbb.configs.default.DefaultConfig")
+@click.option("--version",
+              expose_value=False, callback=get_version,
+              is_flag=True, is_eager=True, help="Show the lucheng version")
 def lucheng():
     """Command interface for lucheng."""
     pass
@@ -75,6 +73,10 @@ def install(welcome, force, username, email, password, group):
 
     click.secho("[+] Creating admin user...", fg="cyan")
     save_user_prompt(username, email, password, group)
+
+    if welcome:
+        click.secho("[+] Creating welcome forum...", fg="cyan")
+        create_welcom_forum()
 
     click.secho("[+] Lucheng has been successfully installed!",
                 fg="green", bold=True)

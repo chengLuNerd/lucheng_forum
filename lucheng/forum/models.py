@@ -3,13 +3,17 @@ forum model define file.
 
 Forum Category and so on
 """
+import itertools
+import operator
+from sqlalchemy.orm import aliased
+
 from lucheng.extensions import db
 
 
 class Forum(db.Model):
     """Forum model define."""
 
-    __table__ = "forums"
+    __tablename__ = "forums"
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
@@ -17,15 +21,21 @@ class Forum(db.Model):
     position = db.Column(db.Integer, default=1, nullable=False)
 
     category_id = db.Column(
-        db.Integer, db.Foreignkey("categories.id"),
+        db.Integer, db.ForeignKey("categories.id"),
         nullable=False
     )
+
+    def save(self):
+        """Save the object to the database."""
+        db.session.add(self)
+        db.session.commit()
+        return self
 
 
 class Category(db.Model):
     """Category model define."""
 
-    __table__ = "categories"
+    __tablename__ = "categories"
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
@@ -40,8 +50,47 @@ class Category(db.Model):
         cascade='all, delete-orphan'
     )
 
+    def save(self):
+        """Save the object to the database."""
+        db.session.add(self)
+        db.session.commit()
+        return self
 
-class Topic(db.Model, CRUDMixin):
+    @classmethod
+    def get_all(cls):
+        """Get all categories with all associated forums.
+
+        It returns a list with tuples. Those tuples are containing the category
+        and their associated forums (whose are stored in a list).
+
+        For example::
+
+            [(<Category 1>, [(<Forum 2>, <ForumsRead>), (<Forum 1>, None)]),
+             (<Category 2>, [(<Forum 3>, None), (<Forum 4>, None)])]
+
+        :param user: The user object is needed to check if we also need their
+                     forumsread object.
+        """
+        forums = Forum.query.subquery()
+        forum_alias = aliased(Forum, forums)
+        query_result = cls.query.\
+            join(forum_alias, cls.id == forum_alias.category_id).\
+            add_entity(forum_alias).\
+            all()
+        # print(query_result)
+
+        forums = []
+        it = itertools.groupby(query_result, operator.itemgetter(0))
+
+        for key, value in it:
+            forums.append((key, [(item[1]) for item in value]))
+
+        return forums
+
+
+class Topic(db.Model):
+    """Topic model define."""
+
     __tablename__ = "topics"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -54,8 +103,38 @@ class Topic(db.Model, CRUDMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     username = db.Column(db.String(200), nullable=False)
 
+    def save(self, user=None, forum=None, post=None):
+        """
+        Save a topic and returns the topic object.
 
-class Post(db.Model, CRUDMixin):
+        If no parameters are given, it will only update the topic.
+
+        :param user: The user who has created the topic
+        :param forum: The forum where the topic is stored
+        :param post: The post object which is connected to the topic
+        """
+        # Updates the topic
+        if self.id:
+            db.session.add(self)
+            db.session.commit()
+            return self
+
+        # Set the forum and user id
+        self.forum_id = forum.id
+        self.user_id = user.id
+        self.username = user.username
+
+        # Insert and commit the topic
+        db.session.add(self)
+        db.session.commit()
+
+        # Create the topic post
+        post.save(user, self)
+
+
+class Post(db.Model):
+    """Post model define."""
+
     __tablename__ = "posts"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -65,3 +144,22 @@ class Post(db.Model, CRUDMixin):
                                        name="fk_post_topic_id",
                                        ondelete="CASCADE"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+
+    username = db.Column(db.String(200), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+
+    def save(self, user=None, topic=None):
+        """Save a new post.
+
+        If no parameters are passed we assume that
+        you will just update an existing post. It returns the object after the
+        operation was successful.
+
+        :param user: The user who has created the post
+        :param topic: The topic in which the post was created
+        """
+        self.user_id = user.id
+        self.username = user.username
+        self.topic_id = topic.id
+        db.session.add(self)
+        db.session.commit()

@@ -4,6 +4,7 @@ summary: populate.py create data tool.
 description: xxx
 """
 from lucheng.user.models import (Group, User)
+from lucheng.forum.models import (Forum, Category, Topic, Post)
 
 
 def create_default_groups():
@@ -45,3 +46,29 @@ def create_user(username, password, email, groupname):
     user.save()
 
     return user
+
+
+def create_welcom_forum():
+    """
+    Create the 'welcome forum' with a welcome topic.
+
+    Returns True if it's created succesfully
+    """
+    if User.query.count() < 1:
+        return False
+
+    user = User.query.filter_by(id=1).first()
+
+    category = Category(title="My Category", position=1)
+    category.save()
+
+    forum = Forum(title="welcome", description="Your first forum",
+                  category_id=category.id)
+    forum.save()
+
+    topic = Topic(title="Welcome!")
+    post = Post(content="Have fun with your new lucheng Forum!")
+
+    topic.save(user=user, forum=forum, post=post)
+
+    return True
