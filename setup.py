@@ -19,7 +19,9 @@ setup(
         'SQLAlchemy',
         'SQLAlchemy-Utils',
         'Flask-Migrate',
-        'Flask-SQLAlchemy'
+        'Flask-SQLAlchemy',
+        'Flask-Login',
+        'Flask-WTF'
     ],
     entry_points='''
         [console_scripts]

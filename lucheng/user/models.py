@@ -4,6 +4,7 @@ summary: models.py.
 description: xxx
 """
 from werkzeug.security import generate_password_hash
+from flask_login import UserMixin
 from lucheng.extensions import db
 
 groups_users = db.Table(
@@ -55,7 +56,7 @@ class Group(db.Model):
         return self
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     """User define."""
 
     __tablename__ = "users"

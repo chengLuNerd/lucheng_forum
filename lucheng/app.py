@@ -6,7 +6,8 @@ manages the app creation and configuration process
 import os
 from flask import Flask, render_template
 from lucheng.forum.views import forum
-from lucheng.extensions import (db, migrate)
+from lucheng.auth.views import auth
+from lucheng.extensions import (db, migrate, login_manager)
 
 
 def create_app(config=None):
@@ -30,6 +31,7 @@ def create_app(config=None):
 def configure_blueprint(app):
     """App blueprint register."""
     app.register_blueprint(forum)
+    app.register_blueprint(auth)
 
 
 def configure_app(app, config):
@@ -65,3 +67,21 @@ def configure_extensions(app):
 
     # Flask-Migrate
     migrate.init_app(app, db)
+
+    # Flask_Login
+    login_manager.init_app(app)
+
+    login_manager.login_view = app.config['LOGIN_VIEW']
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        """Loads the user, Required by the 'login' extension."""
+
+        user_instance = User.query.filter_by(id=user_id).first()
+        """
+        if user_instance:
+            return user_instance
+        else:
+            return None
+        """
+        return user_instance

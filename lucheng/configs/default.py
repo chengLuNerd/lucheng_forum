@@ -12,9 +12,11 @@ class DefaultConfig(object):
 
     DEBUG = True
 
-    SECRET_KEy = 'hard to guess string'
+    SECRET_KEY = 'hard to guess string'
 
     # Database
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + _basedir + '/' + 'flaskbb.sqlite'
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    LOGIN_VIEW = "auth.login"
