@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Lucheng - Login{% endblock %}
 
@@ -10,30 +11,39 @@
     </div>
 
     <div class="panel-body">
+      {{ wtf.quick_form(form) }}
+      <!--
         <form class="form-horizontal" role="form" method="POST">
             {{ form.hidden_tag() }}
-            <div class="control-group">
-              <!-- Text input-->
-              <label class="control-label" for="{{ form.login.id }}">{{ form.login.label }}</label>
-              <div class="controls">
-                <input type="text" placeholder="placeholder" class="input-xlarge" value="{{ form.login() }}">
+            <div class="form-group row">
+              <label class="col-sm-3 control-label" for="">{{ form.login.label }}</label>
+              <div class="col-sm-4">
+                <input type="text" placeholder="placeholder" class="form-control" value="">
               </div>
             </div>
 
-            <div class="control-group">
-              <!-- Text input-->
-              <label class="control-label" for="{{ form.password.id }}">{{ form.password.label }}</label>
-              <div class="controls">
-                <input type="text" placeholder="placeholder" class="input-xlarge" value="{{ form.login() }}">
+            <div class="control-group row">
+              <label class="col-sm-3 control-label" for="{{ form.password.id }}">{{ form.password.label }}</label>
+              <div class="col-sm-4">
+                <input type="text" placeholder="placeholder" class="form-control" value="">
               </div>
             </div>
 
-            <div class="control-group">
-              <input type="checkbox" value="Remember me">
+            <div class="control-group row">
+              <div class="col-sm-offset-3 scol-sm-3">
+                <div class="checkbox">
+                  <label>
+                    <input id="remember_me" name="remember_me" type="checkbox" value="y">
+                    Remember me
+                  </label>
+                </div>
+              </div>
             </div>
 
-            <div class="control-group">
-              <input type="submit" value="{{ form.submit }}">
+            <div class="control-group row">
+              <div class="col-sm-offset-3 col-sm-3">
+                <input class="btn btn-success" id="submit" name="submit" type="submit" value="Login">
+              </div>
             </div>
 
             <div class="form-group">
@@ -43,7 +53,9 @@
                 </div>
             </div>
         </form>
-    </div>
-</div>
+      -->
+    </div> <!-- end panel-body -->
+
+</div> <!-- end page panel -->
 
 {% endblock %}

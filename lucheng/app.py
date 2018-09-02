@@ -7,7 +7,8 @@ import os
 from flask import Flask, render_template
 from lucheng.forum.views import forum
 from lucheng.auth.views import auth
-from lucheng.extensions import (db, migrate, login_manager)
+from lucheng.extensions import (db, migrate, login_manager, bootstrap)
+from lucheng.user.models import User
 
 
 def create_app(config=None):
@@ -68,6 +69,9 @@ def configure_extensions(app):
     # Flask-Migrate
     migrate.init_app(app, db)
 
+    # Flask-Bootstrap
+    bootstrap.init_app(app)
+
     # Flask_Login
     login_manager.init_app(app)
 
@@ -75,8 +79,7 @@ def configure_extensions(app):
 
     @login_manager.user_loader
     def load_user(user_id):
-        """Loads the user, Required by the 'login' extension."""
-
+        """Load the user, Required by the 'login' extension."""
         user_instance = User.query.filter_by(id=user_id).first()
         """
         if user_instance:

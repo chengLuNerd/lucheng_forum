@@ -1,3 +1,17 @@
+"""
+Lucheng is a forum software written in Python using the microframework Flask.
+
+copy from FlaskBB
+
+And Easy to Setup
+-----------------
+    $ pip install -e .
+
+    $ flaskbb install
+
+    $ flaskbb run
+
+"""
 from setuptools import setup, find_packages
 
 setup(
@@ -21,7 +35,8 @@ setup(
         'Flask-Migrate',
         'Flask-SQLAlchemy',
         'Flask-Login',
-        'Flask-WTF'
+        'Flask-WTF',
+        'Flask-Bootstrap'
     ],
     entry_points='''
         [console_scripts]
