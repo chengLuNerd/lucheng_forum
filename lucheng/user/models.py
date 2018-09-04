@@ -102,3 +102,8 @@ class User(db.Model, UserMixin):
         db.session.add(self)
         db.session.commit()
         return self
+
+    @classmethod
+    def authenticate(cls, username, password):
+        """Check user legal."""
+        user = cls.

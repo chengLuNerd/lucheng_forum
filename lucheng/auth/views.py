@@ -11,6 +11,7 @@
 from flask import (Blueprint, url_for, redirect, render_template)
 from flask_login import (current_user, login_user)
 from lucheng.auth.forms import LoginForm
+from lucheng.user.models import User
 
 
 auth = Blueprint("auth", __name__)
