@@ -3,7 +3,7 @@ summary: models.py.
 
 description: xxx
 """
-from werkzeug.security import generate_password_hash
+from werkzeug.security import (generate_password_hash, check_password_hash)
 from flask_login import UserMixin
 from lucheng.extensions import db
 
@@ -103,7 +103,21 @@ class User(db.Model, UserMixin):
         db.session.commit()
         return self
 
+    def check_password(self, password):
+        """Check passwords. If passwords match it returns true, else false."""
+        if self.password is None:
+            return False
+        print("-------------------------------------")
+        print(password)
+        return check_password_hash(self.password, password)
+
+    '''
     @classmethod
     def authenticate(cls, username, password):
         """Check user legal."""
-        user = cls.
+        user = cls.query().filter(db.or_(User.username == username,
+                                         User.email == username)).first()
+        if user is not None:
+            if user.check_password(password):
+                return user
+    '''
