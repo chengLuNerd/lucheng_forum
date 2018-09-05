@@ -61,6 +61,24 @@
               </ul>
 
               <ul class="nav navbar-nav navbar-right">
+                {% if current_user and current_user.is_authenticated %}
+                <!-- User Menu -->
+                <li>
+                    <div class="btn-group navbar-btn user-btn">
+                        <a class="btn btn-primary" href="#">
+                          <span class="fa fa-user fa-fw"></span> {{ current_user.username }}
+                        </a>
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#"><span class="fa fa-book fa-fw"></span>Topic Tracker</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#"><span class="fa fa-cogs fa-fw"></span>Settings</a></li>
+                            <li><a href="{{ url_for('auth.logout') }}"><span class="fa fa-power-off fa-fw"></span>Logout</a></li>
+                        </ul>
+                      </div>
+                </li>
+                {% else %}
+                <!-- Not logged in- Login/Register -->
                 <li>
                     <div class="btn-group navbar-btn user-btn">
                         <a class="btn btn-primary" href="{{ url_for('auth.login') }}">
@@ -75,9 +93,10 @@
                         </ul>
                     </div>
                 </li>
-              </ul>
+                {% endif %}
 
-            </div><!-- /.navbar-collapse -->
+              </ul> <!-- end navbar right -->
+            </div> <!-- /.navbar-collapse -->
         </nav>
 
         <!-- the actual content block -->
@@ -98,7 +117,7 @@
 
     {% block javascript %}
     <!-- jquery and bootstrap and flaskbb.js -->
-    <script src="{{ url_for('static', filename='js/scripts.min.js')}}"
+    <script src="{{ url_for('static', filename='js/scripts.min.js')}}"></script>
     {% endblock %}
 
     {# for extra scripts in other template. #}
