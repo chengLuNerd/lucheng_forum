@@ -6,7 +6,7 @@ resetting the password of a user if he has lost his password
 
 """
 from flask import (Blueprint, url_for, redirect, render_template, flash)
-from flask_login import (current_user, login_user)
+from flask_login import (current_user, login_user, logout_user, login_required)
 from lucheng.auth.forms import LoginForm
 from lucheng.user.models import User
 from lucheng.extensions import db
@@ -32,3 +32,12 @@ def login():
                 return redirect(url_for("forum.index"))
             flash("Invalid username or password", category="danger")
     return render_template("auth/login.html", form=form)
+
+
+@auth.route("/logout")
+@login_required
+def logout():
+    """Logout the user."""
+    logout_user()
+    flash("You have been logged out")
+    return redirect(url_for("forum.index"))
