@@ -39,5 +39,5 @@ def login():
 def logout():
     """Logout the user."""
     logout_user()
-    flash("You have been logged out")
+    flash("You have been logged out", category="success")
     return redirect(url_for("forum.index"))
