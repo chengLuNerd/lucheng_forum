@@ -50,3 +50,15 @@ def save_user_prompt(username, email, password, group):
             type=click.Choice(["admin", "super_mode", "mod", "member"]))
 
     return create_user(username, password, email, group)
+
+
+def write_config(config, config_template, config_path):
+    """Write a new config file based upon the config template.
+
+    :param config: A dict containing all the key/value pairs which should be
+                   used for the new configuration file.
+    :param config_template: The config (jinja2-)template.
+    :param config_path: The place to write the new config file.
+    """
+    with open(config_path, "wb") as cfg_file:
+        cfg_file.write(config_template.render(**config).encode("utf-8"))

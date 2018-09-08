@@ -1,0 +1,151 @@
+# This file has been automatically generated on {{ timestamp }}.
+# Feel free to adjust it as needed.
+import os
+import datetime
+
+
+# Flask Settings
+DEBUG = {{ is_debug }}
+TESTING = False
+
+SERVER_NAME = "{{ server_name }}"
+
+# Prefer HTTPS over HTTP
+PREFERRED_URL_SCHEME = {% if use_https %}"https"{% else %}"http"{%endif%}
+
+# Don't send secure cookies over an unencrypted connection ()
+SESSION_COOKIE_SECURE = {% if use_https %}True{% else %}False{%endif%}
+# Don't make cookies available to JS (XSS) - browsers hide httpOnly cookies from JS
+SESSION_COOKIE_HTTPONLY = True
+
+
+# Database
+SQLALCHEMY_DATABASE_URI = "{{ database_uri }}"
+
+# This option will be removed as soon as Flask-SQLAlchemy removes it.
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# This will print all SQL statements
+SQLALCHEMY_ECHO = False
+
+# Security - IMPORTANT
+# This is the secret key that is used for session signing.
+SECRET_KEY = "{{ secret_key }}"
+
+# You can generate the WTF_CSRF_SECRET_KEY the same way as you have
+# generated the SECRET_KEY. If no WTF_CSRF_SECRET_KEY is provided, it will
+# use the SECRET_KEY.
+WTF_CSRF_ENABLED = True
+WTF_CSRF_SECRET_KEY = "{{ csrf_secret_key }}"
+
+# Auth
+# ------------------------------
+LOGIN_VIEW = "auth.login"
+REAUTH_VIEW = "auth.reauth"
+LOGIN_MESSAGE_CATEGORY = "info"
+REFRESH_MESSAGE_CATEGORY = "info"
+
+# The name of the cookie to store the Remember Me information in.
+REMEMBER_COOKIE_NAME = "remember_token"
+# The amount of time before the cookie expires, as a datetime.timedelta object.
+# Default: 365 days (1 non-leap Gregorian year)
+REMEMBER_COOKIE_DURATION = datetime.timedelta(days=365)
+# If the Remember Me cookie should cross domains,
+# set the domain value here (i.e. .example.com would allow the cookie
+# to be used on all subdomains of example.com).
+REMEMBER_COOKIE_DOMAIN = None
+# Limits the Remember Me cookie to a certain path.
+REMEMBER_COOKIE_PATH = "/"
+# Restricts the Remember Me cookies scope to secure channels (typically HTTPS).
+REMEMBER_COOKIE_SECURE = {% if use_https %}True{% else %}False{%endif%}
+# Prevents the Remember Me cookie from being accessed by client-side scripts.
+REMEMBER_COOKIE_HTTPONLY = True
+
+
+# Full-Text-Search
+# ------------------------------
+# This will use the "whoosh_index" directory to store the search indexes
+WHOOSHEE_DIR = os.path.join(DefaultConfig.basedir, "whoosh_index", DefaultConfig.py_version)
+# How long should whooshee try to acquire write lock? (defaults to 2)
+WHOOSHEE_WRITER_TIMEOUT = 2
+# Minimum number of characters for the search (defaults to 3)
+WHOOSHEE_MIN_STRING_LEN = 3
+
+
+# Redis
+# ------------------------------
+# If redis is enabled, it can be used for:
+#   - Sending non blocking emails via Celery (Task Queue)
+#   - Caching
+#   - Rate Limiting
+REDIS_ENABLED = {{ redis_enabled }}
+REDIS_URL = "{{ redis_uri }}"
+REDIS_DATABASE = 0
+
+
+# Celery
+# ------------------------------
+CELERY_BROKER_URL = "{{ redis_uri }}"
+CELERY_RESULT_BACKEND = "{{ redis_uri }}"
+
+
+RATELIMIT_STORAGE_URL = "{% if redis_enabled %}{{ redis_uri }}{% else %}memory://{% endif %}"
+
+# Caching
+# ------------------------------
+# For all available caching types, have a look at the Flask-Cache docs
+# https://pythonhosted.org/Flask-Caching/#configuring-flask-caching
+CACHE_TYPE = "{% if redis_enabled %}redis{% else %}simple{% endif %}"
+CACHE_DEFAULT_TIMEOUT = 60
+
+
+# Mail
+# ------------------------------
+#MAIL_SERVER = "smtp.gmail.com"
+#MAIL_PORT = 587
+#MAIL_USE_TLS = True
+#MAIL_USE_SSL = True
+#MAIL_USERNAME = "your_username@gmail.com"
+#MAIL_PASSWORD = "your_password"
+#MAIL_DEFAULT_SENDER = ("Your Name", "your_username@gmail.com")
+
+# Local SMTP Server
+MAIL_SERVER = "{{ mail_server }}"
+MAIL_PORT = {{ mail_port }}
+MAIL_USE_SSL = {{ mail_use_ssl }}
+MAIL_USE_TLS = {{ mail_use_tls }}
+MAIL_USERNAME = "{{ mail_username }}"
+MAIL_PASSWORD = "{{ mail_password }}"
+MAIL_DEFAULT_SENDER = ("{{ mail_sender_name }}", "{{ mail_sender_address }}")
+# Where to logger should send the emails to
+ADMINS = ["{{ mail_admin_address }}"]
+
+
+# Logging Settings
+# ------------------------------
+
+# Logging Config Path
+# If set to a file path, this should be an absolute file path
+{% if log_config_path %}
+LOG_CONF_FILE = "{{ log_config_path }}"
+{% else %}
+LOG_CONF_FILE = None
+{% endif %}
+
+# Path to store the INFO and ERROR logs
+# If set to a file path, this should be an absolute path
+LOG_PATH = os.path.join(DefaultConfig.basedir, 'logs')
+
+# Lucheng Settings
+# ------------------------------ #
+# URL Prefixes
+FORUM_URL_PREFIX = ""
+USER_URL_PREFIX = "/user"
+MESSAGE_URL_PREFIX = "/message"
+AUTH_URL_PREFIX = "/auth"
+ADMIN_URL_PREFIX = "/admin"
+# Remove dead plugins - useful if you want to migrate your instance
+# somewhere else and forgot to reinstall the plugins.
+# If set to `False` it will NOT remove plugins that are NOT installed on
+# the filesystem (virtualenv, site-packages).
+REMOVE_DEAD_PLUGINS = False

@@ -30,7 +30,7 @@ def login():
             if user.check_password(form.password.data):
                 login_user(user)
                 return redirect(url_for("forum.index"))
-            flash("Invalid username or password", category="danger")
+        flash("Invalid username or password", category="danger")
     return render_template("auth/login.html", form=form)
 
 
