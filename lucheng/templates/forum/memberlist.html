@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Lucheng - Memberlist{% endblock %}
+
+{% block content %}
+<div class="page-view">
+
+  <div class="panel page-panel">
+    <div class="panel-heading page-head">
+      <a href="{{ url_for('forum.memberlist') }}">Memberlist</a>
+    </div>
+    <div class="panel-body page-body">
+      <div class="page-meta">
+          <div class="col-md-1 col-sm-1 col-xs-1 meta-item">#</div>
+          <div class="col-md-3 col-sm-3 col-xs-5 meta-item">
+              <a href="{{ url_for('forum.memberlist') }}?sort_by=username&order_by={{ order_by }}">Username</a>
+          </div>
+          <div class="col-md-3 col-sm-3 hidden-xs meta-item">
+              <a href="{{ url_for('forum.memberlist') }}?sort_by=reg_date&order_by={{ order_by }}">Date registered</a>
+          </div>
+          <div class="col-md-3 col-sm-3 col-xs-5 meta-item">Group</div>
+          <div class="col-md-2 col-sm-2 hidden-xs meta-item">
+              <a href="{{ url_for('forum.memberlist') }}?sort_by=post_count&order_by={{ order_by }}">Posts</a>
+          </div>
+      </div>
+
+      {% for user in users.items %}
+      <div class="row page-row hover clearfix">
+        <div class="col-md-1 col-sm-1 col-xs-1">{{ user.id }}</div>
+        <div class="col-md-3 col-sm-3 col-xs-5"><a href="{{ user.url }}">{{ user.username }}</a></div>
+        <div class="col-md-3 col-sm-3 hidden-xs"></div>
+        <div class="col-md-3 col-sm-3 col-xs-5">{{ user.primary_group.name }}</div>
+        <div class="col-md-2 col-sm-2 hidden-xs">{{ user.post_count }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
