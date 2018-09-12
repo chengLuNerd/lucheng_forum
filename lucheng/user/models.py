@@ -82,6 +82,11 @@ class User(db.Model, UserMixin):
 
     primary_group_id = db.Column(db.Integer, db.ForeignKey('groups.id'),
                                  nullable=False)
+
+    primary_group = db.relationship('Group', lazy="joined",
+                                    backref="user_group", uselist=False,
+                                    foreign_keys=[primary_group_id])
+
     secondary_groups = db.relationship(
         'Group',
         secondary=groups_users,
@@ -107,8 +112,6 @@ class User(db.Model, UserMixin):
         """Check passwords. If passwords match it returns true, else false."""
         if self.password is None:
             return False
-        print("-------------------------------------")
-        print(password)
         return check_password_hash(self.password, password)
 
     '''

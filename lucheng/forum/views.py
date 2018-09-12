@@ -28,8 +28,16 @@ def index():
                            post_count=post_count)
 
 
-@forum.route("/memberlist")
+@forum.route("/memberlist", methods=['GET', 'POST'])
 def memberlist():
     """Memberlist show logic view."""
-    users = User.query.all()
+    page = requests.args.get('page', 1, type=int)
+
+    search_form  = UserSearchForm()
+    if search_form.validate():
+        pass
+    else:
+        users = User.query.paginate(page, 3, False)
+
+    print(users)
     return render_template("forum/memberlist.html", users=users)
