@@ -34,7 +34,7 @@ def memberlist():
     """Memberlist show logic view."""
     page = request.args.get('page', 1, type=int)
 
-    search_form  = UserSearchForm()
+    search_form = UserSearchForm()
     if search_form.validate():
         print(search_form.search_query.data)
         users = User.query.paginate(page, 3, False)

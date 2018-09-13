@@ -5,9 +5,29 @@
 {% block content %}
 <div class="page-view">
 
+  <ol class="breadcrumb flaskbb-breadcrumb">
+    <li><a href="{{ url_for('forum.index') }}">Forum</a></li>
+    <li class="active">Memberlist</li>
+  </ol>
+
   <div class="row controls-row">
     <div class="col-md-8 col-sm-8 col-xs-8 controls-col">
       <div class="pull-left">
+        <ul class="pagination">
+          <li class="disabled"><a href="#"><span class="pages-label">Pages:</span></a></li>
+          {% for p in users.iter_pages() %}
+            {% if p %}
+              {% if p != users.page %}
+                <li><a href="{{ url_for('forum.memberlist', page=p)}}">{{ p }}</a></li>
+              {% else %}
+                <li class="active"><a href="#">{{ p }}</a></li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if users.has_next %}
+            <li><a href="{{ url_for('forum.memberlist', page=users.next_num)}}">&raquo;</a></li>
+          {% endif %}
+        </ul>
       </div>
     </div>
 
