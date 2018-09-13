@@ -1,5 +1,5 @@
 """
-flaskbb.auth.forms .
+lucheng.auth.forms .
 
 It provides the forms that are needed for the auth views.
 
