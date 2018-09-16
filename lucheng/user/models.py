@@ -114,6 +114,11 @@ class User(db.Model, UserMixin):
             return False
         return check_password_hash(self.password, password)
 
+    @property
+    def groups(self):
+        """Return the user groups."""
+        return [self.primary_group] + list(self.secondary_groups)
+
     '''
     @classmethod
     def authenticate(cls, username, password):

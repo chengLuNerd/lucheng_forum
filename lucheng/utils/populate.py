@@ -48,7 +48,7 @@ def create_user(username, password, email, groupname):
     return user
 
 
-def create_welcom_forum():
+def create_welcome_forum():
     """
     Create the 'welcome forum' with a welcome topic.
 

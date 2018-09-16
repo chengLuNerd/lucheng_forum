@@ -5,8 +5,9 @@ This module handles the  forum logic like creating and viewing
 topics and post.
 """
 from flask import Blueprint, request, render_template
+from flask_login import current_user
 
-from lucheng.forum.models import Category
+from lucheng.forum.models import (Category, Topic, Post)
 from lucheng.user.models import User
 from lucheng.forum.forms import UserSearchForm
 
@@ -17,10 +18,11 @@ forum = Blueprint("forum", __name__)
 @forum.route("/")
 def index():
     """Forum index route function."""
-    categories = Category.get_all()
-    user_count = 1
-    topic_count = 1
-    post_count = 1
+    categories = Category.get_all(user=current_user)
+
+    user_count = User.query.count()
+    topic_count = Topic.query.count()
+    post_count = Post.query.count()
 
     return render_template('forum/index.html',
                            categories=categories,

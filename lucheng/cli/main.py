@@ -17,7 +17,8 @@ from sqlalchemy_utils.functions import drop_database
 from flask_migrate import upgrade as upgrade_database
 from lucheng.cli.utils import (get_version, save_user_prompt, write_config)
 from lucheng.extensions import db
-from lucheng.utils.populate import (create_default_groups, create_welcom_forum)
+from lucheng.utils.populate import (create_default_groups,
+                                    create_welcome_forum)
 from lucheng import create_app
 
 
@@ -81,7 +82,7 @@ def install(welcome, force, username, email, password, group):
 
     if welcome:
         click.secho("[+] Creating welcome forum...", fg="cyan")
-        create_welcom_forum()
+        create_welcome_forum()
 
     click.secho("[+] Lucheng has been successfully installed!",
                 fg="green", bold=True)

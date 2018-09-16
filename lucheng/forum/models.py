@@ -9,6 +9,23 @@ from sqlalchemy.orm import aliased
 
 from lucheng.extensions import db
 
+# m2m table for group-forum permission mapping
+forumgroups = db.Table(
+    'forumgroups',
+    db.Column(
+        'group_id',
+        db.Integer(),
+        db.ForeignKey('groups.id'),
+        nullable=False
+    ),
+    db.Column(
+        'forum_id',
+        db.Integer(),
+        db.ForeignKey('forums.id', use_alter=True, name="fk_forum_id"),
+        nullable=False
+    )
+)
+
 
 class Forum(db.Model):
     """Forum model define."""
@@ -25,8 +42,19 @@ class Forum(db.Model):
         nullable=False
     )
 
-    def save(self):
+    groups = db.relationship(
+        "Group",
+        secondary=forumgroups,
+        primaryjoin=(forumgroups.c.forum_id == id),
+        backref="forumgroups",
+        lazy="joined",
+    )
+
+    def save(self, groups=None):
         """Save the object to the database."""
+        from lucheng.user.models import Group
+        if groups is None:
+            self.groups = Group.query.order_by(Group.name.asc()).all()
         db.session.add(self)
         db.session.commit()
         return self
@@ -57,7 +85,7 @@ class Category(db.Model):
         return self
 
     @classmethod
-    def get_all(cls):
+    def get_all(cls, user):
         """Get all categories with all associated forums.
 
         It returns a list with tuples. Those tuples are containing the category
@@ -71,19 +99,31 @@ class Category(db.Model):
         :param user: The user object is needed to check if we also need their
                      forumsread object.
         """
-        forums = Forum.query.subquery()
-        forum_alias = aliased(Forum, forums)
-        query_result = cls.query.\
-            join(forum_alias, cls.id == forum_alias.category_id).\
-            add_entity(forum_alias).\
-            all()
-        # print(query_result)
+        if user.is_authenticated:
+            from lucheng.user.models import Group
+            # forums = Forum.query.subquery()
+            # get list of user group ids
+            user_groups = [group.id for group in user.groups]
+            # filter forums by user groups
+            user_forums = Forum.query.\
+                filter(Forum.groups.any(Group.id.in_(user_groups))).subquery()
+            forum_alias = aliased(Forum, user_forums)
+
+            query_result = cls.query.\
+                join(forum_alias, cls.id == forum_alias.category_id).\
+                add_entity(forum_alias).\
+                all()
+            # print(query_result)
+        else:
+            query_result = cls.query.join(Forum, cls.id == Forum.category_id).\
+                add_entity(Forum).\
+                all()
 
         forums = []
         it = itertools.groupby(query_result, operator.itemgetter(0))
 
         for key, value in it:
-            forums.append((key, [(item[1]) for item in value]))
+            forums.append((key, [item[1] for item in value]))
 
         return forums
 
