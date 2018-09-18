@@ -5,7 +5,8 @@ This view provides user authentication, registration and a view for
 resetting the password of a user if he has lost his password
 
 """
-from flask import (Blueprint, url_for, redirect, render_template, flash)
+from flask import (Blueprint, url_for, redirect, render_template,
+                   flash, current_app)
 from flask_login import (current_user, login_user, logout_user, login_required)
 from lucheng.auth.forms import LoginForm
 from lucheng.user.models import User
@@ -28,6 +29,9 @@ def login():
                    User.email == form.login.data)).first()
         if user is not None:
             if user.check_password(form.password.data):
+                current_app.logger.info('%s logged in successfully---------',
+                                        user.username)
+                print('lucheng test -------------')
                 login_user(user)
                 return redirect(url_for("forum.index"))
         flash("Invalid username or password", category="danger")
