@@ -20,3 +20,5 @@ class DefaultConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     LOGIN_VIEW = "auth.login"
+
+    INFO_LOG = "info.log"

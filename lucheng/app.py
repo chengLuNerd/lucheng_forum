@@ -4,6 +4,7 @@ manages the app creation and configuration process
 """
 
 import os
+import logging
 from flask import Flask, render_template
 from lucheng.forum.views import forum
 from lucheng.auth.views import auth
@@ -26,7 +27,31 @@ def create_app(config=None):
     # error handler
     configure_errorhandlers(app)
 
+    configure_logging(app)
+
     return app
+
+
+def configure_logging(app):
+    """App configure logging."""
+    logs_folder = os.path.join(app.root_path, os.pardir, "logs")
+
+    formatter = logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s '
+        '[in %(pathname)s:%(lineno)d]')
+
+    info_log = os.path.join(logs_folder, app.config['INFO_LOG'])
+
+    from logging.handlers import RotatingFileHandler
+    info_file_handler = RotatingFileHandler(
+        info_log,
+        maxBytes=1024,
+        backupCount=10
+    )
+
+    info_file_handler.setLevel(logging.INFO)
+    info_file_handler.setFormatter(formatter)
+    app.logger.addHandler(info_file_handler)
 
 
 def configure_blueprint(app):
